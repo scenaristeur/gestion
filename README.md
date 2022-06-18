@@ -121,6 +121,11 @@ methods:{
 
 ```
 
+## read files
+https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/read-write-data/
+- getSolidDataset -> getThingAll -> filter Container -> foreach getFile ->fileReader -> AddRessource --> bootstrp list
+
+
 ## create login
 
 ## write authenticated
