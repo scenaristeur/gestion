@@ -64,7 +64,9 @@ add those scripts
 "git": "npm run build && git add . && git commit -m",
 "postgit": "git push && git subtree push --prefix dist origin gh-pages"`
 
+## goto settings/pages
 
+open https://scenaristeur.github.io/gestion/
 
 
 
