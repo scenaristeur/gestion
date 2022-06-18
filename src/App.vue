@@ -5,6 +5,7 @@
       <router-link to="/about">About</router-link>
     </nav>
     <router-view/>
+    <small><i>0.0.1 - resource form</i></small>
   </div>
 </template>
 
