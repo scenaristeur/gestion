@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import { overwriteFile, getSourceUrl } from "@inrupt/solid-client";
+
 export default {
   name: 'HelloWorld',
   data(){
@@ -14,11 +16,27 @@ export default {
     }
   },
   methods:{
-    create(){
+    async create(){
       let d = Date.now()
       this.resource.created = d
       this.resource.updated = d
       console.log(this.resource)
+
+      const MY_POD_URL = "https://spoggy-test8.solidcommunity.net/public/gestion/";
+      let targetFileURL = MY_POD_URL+d
+      let data = JSON.stringify(this.resource)
+      try {
+        const savedFile = await overwriteFile(
+          targetFileURL,                              // URL for the file.
+          data,                                       // File
+          { contentType: 'application/json'/*, fetch: fetch*/ }    // mimetype if known, fetch from the authenticated session
+        );
+        console.log(`File saved at ${getSourceUrl(savedFile)}`);
+
+      } catch (error) {
+        console.error(error);
+      }
+
     }
   }
 }
