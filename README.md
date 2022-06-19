@@ -4,6 +4,8 @@
 ### nodejs
 ### vue-cli
 ### vue create gestion
+### verify working
+-- openjs console / optionnal XHR & Requêtes
 ### bootstrap-vue "bootstrap": "^4.5.3",
 ### nettoyage components/HelloWorld
 - input + button -> resource.name
@@ -268,8 +270,17 @@ export default {
 
 ```
 
+## IMPORTANT ! update all queries with the sc.fetch
+
 
 --> Now you can login with your webId
+
+-- rechange sharing config and drag/drop Everyone to Viewers
+-- logout (or even try to login with another webid )
+-- test creating a new resources you should get a 401 authenticated -> you can't add
+-- login back
+-- you can create and delete resources
+
 
 
 ## + optionnal get pod infos  @inrupt/vocab-solid-common @inrupt/vocab-common-rdf

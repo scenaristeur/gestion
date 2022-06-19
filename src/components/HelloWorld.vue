@@ -26,6 +26,7 @@
 
 <script>
 import { overwriteFile, getSourceUrl, getSolidDataset, getThingAll, getFile, deleteFile } from "@inrupt/solid-client";
+import * as sc from '@inrupt/solid-client-authn-browser'
 
 export default {
   name: 'HelloWorld',
@@ -53,7 +54,7 @@ export default {
         const savedFile = await overwriteFile(
           targetFileURL,                              // URL for the file.
           data,                                       // File
-          { contentType: 'application/json'/*, fetch: fetch*/ }    // mimetype if known, fetch from the authenticated session
+          { contentType: 'application/json', fetch: sc.fetch }    // mimetype if known, fetch from the authenticated session
         );
         console.log(`File saved at ${getSourceUrl(savedFile)}`);
 
@@ -69,7 +70,7 @@ export default {
       this.resources = []
       const dataset = await getSolidDataset(
         this.MY_POD_URL,
-        //  { fetch: fetch }  // fetch function from authenticated session
+        { fetch: sc.fetch }  // fetch function from authenticated session
       );
 
       console.log(dataset)
@@ -86,7 +87,7 @@ export default {
         try {
           const file = await getFile(
             f.url,               // File in Pod to Read
-            //  { fetch: fetch }       // fetch from authenticated session
+             { fetch: sc.fetch }       // fetch from authenticated session
           );
         //  console.log(file)
 
@@ -118,7 +119,7 @@ export default {
           // Delete the specified file from the Pod.
           await deleteFile(
             item.url,  // File to delete
-            //{ fetch: fetch }                         // fetch function from authenticated session
+            { fetch: sc.fetch }                         // fetch function from authenticated session
           );
           console.log("Deleted:: "+item.url);
           this.read()
