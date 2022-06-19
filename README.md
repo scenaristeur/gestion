@@ -1,6 +1,6 @@
 # gestion
 
-## First : Create a progressive web app with Vue2 and bootstrap-vue
+## PART 1: Create a progressive web app with Vue2 and bootstrap-vue
 ### nodejs
 ### vue-cli
 ### vue create gestion
@@ -80,7 +80,7 @@ open https://scenaristeur.github.io/gestion/
 
 ______________________________________________________________________________
 
-# The Solid Part
+# PART 2 : The 'BASIC' Solid interaction
 
 ## create a public write folder on one of your POD
 
@@ -150,14 +150,137 @@ class="item list-group-item d-flex justify-content-between p-1">
 </b-list-group-item>
 ```
 
+# Part 3 : The 'AUTHENTICATED' Solid interaction
+Now we will abort some more complexity , are you ready ?
+
 ## create login
+- another vue JS component with two buttons login / logout , a way to select the provider
+- inspired from https://github.com/scenaristeur/agent/blob/main/src/components/SolidLogin.vue
+- with a specific vuex store module  this.$store.state.solid.session
+
+
+
+```
+npm install --save @inrupt/solid-client-authn-browser
+```
+
+src/views/HomeView.vue
+```
+<template>
+  <div class="home">
+    <SolidLogin />
+    <HelloWorld />
+  </div>
+</template>
+
+<script>
+// @ is an alias to /src
+import HelloWorld from '@/components/HelloWorld.vue'
+
+export default {
+  name: 'HomeView',
+  components: {
+    HelloWorld,
+    'SolidLogin': ()=>import('@/components/SolidLogin'),
+  }
+}
+</script>
+```
+
+with plugin
+- https://github.com/scenaristeur/agent/blob/94c321ac364954aa267efac68f77218de2d92fad/src/plugins/solid-plugin.js
+```
+import * as sc from '@inrupt/solid-client-authn-browser'
+
+const plugin = {
+  install(Vue, opts = {}) {
+    let store = opts.store
+
+    Vue.prototype.$checkSolidSession = async function(){
+      await sc.handleIncomingRedirect({
+        restorePreviousSession: true
+      }).then((info) => {
+        if(info.isLoggedIn ==  true){
+          console.log(`Logged in with WebID [${info.webId}]`)
+          store.commit('solid/setSession',info)
+        }
+      })
+    }
+
+    Vue.prototype.$login = async function(issuer){
+      console.log("login", issuer)
+      if (!sc.getDefaultSession().info.isLoggedIn) {
+        await sc.login({
+          oidcIssuer: issuer,
+          redirectUrl: window.location.href,
+          clientName: "Gestion"
+        });
+      }
+    },
+
+    Vue.prototype.$logout = async function(){
+      let session = sc.getDefaultSession()
+      await session.logout()
+      store.commit('solid/setSession',null)
+      store.commit('solid/setPod', null)
+    }
+    }
+}
+
+// Auto-install
+if (typeof window !== 'undefined' && window.Vue) {
+  window.Vue.use(plugin)
+}
+
+export default plugin
+
+```
+
+src/main.js
+```
+import SolidPlugin from './plugins/solid-plugin';
+Vue.use(SolidPlugin, {store: store});
+```
+
+- run $checkSolidSession on start
+src/App.vue
+```
+<template>
+  <div id="app">
+    <nav>
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </nav>
+    <router-view/>
+    <small><i>0.0.1 - resource form</i></small>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App',
+  created(){
+    this.$checkSolidSession()
+  }
+}
+
+</script>
+
+```
+
+
+--> Now you can login with your webId
+
+
+## + optionnal get pod infos  @inrupt/vocab-solid-common @inrupt/vocab-common-rdf
+
 
 ## write authenticated
 
 ## remove public write
 
 ## should add a caching system to only get resources that have changed
-## could add Notification(ESS)/Websocket(NSS) to track change 
+## could add Notification(ESS)/Websocket(NSS) to track change
 
 _____________________________________________
 

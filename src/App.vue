@@ -5,9 +5,19 @@
       <router-link to="/about">About</router-link>
     </nav>
     <router-view/>
-    <small><i>0.0.1 - resource form</i></small>
+    <small><i>0.0.1 - login</i></small>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'App',
+  created(){
+    this.$checkSolidSession()
+  }
+}
+
+</script>
 
 <style>
 #app {

@@ -15,6 +15,9 @@ Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
 
+import SolidPlugin from './plugins/solid-plugin';
+Vue.use(SolidPlugin, {store: store});
+
 Vue.config.productionTip = false
 
 new Vue({
