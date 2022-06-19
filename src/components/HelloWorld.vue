@@ -7,20 +7,25 @@
     <b-button @click="read">Read</b-button>
 
     <!-- {{ resources }} -->
-
+    {{resources.length}} resources
     <b-list-group>
-      <b-list-group-item button v-for="r in resources" :key="r.url">
-
-        <h4>  {{r.data.name}}</h4>
+      <b-list-group-item button v-for="r in resources" :key="r.url"
+      class="item list-group-item d-flex justify-content-between p-1">
+      <p class="p-0 m-0 flex-grow-1">
+        <b>  {{r.data.name}}</b><br>
         {{r.data}}<br>
         <small><i>{{r.url}}</i></small>
-      </b-list-group-item>
-    </b-list-group>
-  </div>
+      </p>
+      <b-button size="sm" variant="outline-danger">
+        <b-icon-trash @click.stop="init_trash(r)" variant="danger"></b-icon-trash>
+      </b-button>
+    </b-list-group-item>
+  </b-list-group>
+</div>
 </template>
 
 <script>
-import { overwriteFile, getSourceUrl, getSolidDataset, getThingAll, getFile } from "@inrupt/solid-client";
+import { overwriteFile, getSourceUrl, getSolidDataset, getThingAll, getFile, deleteFile } from "@inrupt/solid-client";
 
 export default {
   name: 'HelloWorld',
@@ -30,6 +35,9 @@ export default {
       MY_POD_URL: "https://spoggy-test8.solidcommunity.net/public/gestion/",
       resources : []
     }
+  },
+  created(){
+    this.read()
   },
   methods:{
     async create(){
@@ -50,7 +58,7 @@ export default {
         console.log(`File saved at ${getSourceUrl(savedFile)}`);
 
         this.resource = {}
-        this.read()
+
       } catch (error) {
         console.error(error);
       }
@@ -80,7 +88,7 @@ export default {
             f.url,               // File in Pod to Read
             //  { fetch: fetch }       // fetch from authenticated session
           );
-          console.log(file)
+        //  console.log(file)
 
           const fileReader = new FileReader()
           fileReader.addEventListener('load', () => {
@@ -95,12 +103,30 @@ export default {
       this.resources.reverse()
     },
     addResource(r){
-      console.log(r)
+      //console.log(r)
       this.resources.push({url: r.file.url, data: JSON.parse(r.result)})
       this.resources.sort((a, b) => {
         return b.data.updated - a.data.updated;
       })
-    }
+    },
+    async init_trash(item){
+      console.log(item)
+      var remove = confirm("Are you sure you want to delete "+item.data.name+ " ?")
+      console.log(remove);
+      if (remove == true ){
+        try {
+          // Delete the specified file from the Pod.
+          await deleteFile(
+            item.url,  // File to delete
+            //{ fetch: fetch }                         // fetch function from authenticated session
+          );
+          console.log("Deleted:: "+item.url);
+          this.read()
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    },
   },
 
 }

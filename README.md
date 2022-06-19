@@ -121,16 +121,43 @@ methods:{
 
 ```
 
+## add properties like description, content...
+
 ## read files
 https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/read-write-data/
 - getSolidDataset -> getThingAll -> filter Container -> foreach getFile ->fileReader -> AddRessource --> bootstrp list
 
+
+## created
+
+```  created(){
+      this.read()
+  },
+```
+
+## delete file
+```
+<b-list-group-item button v-for="r in resources" :key="r.url"
+class="item list-group-item d-flex justify-content-between p-1">
+<p class="p-0 m-0 flex-grow-1">
+  <b>  {{r.data.name}}</b><br>
+  {{r.data}}<br>
+  <small><i>{{r.url}}</i></small>
+</p>
+<b-button size="sm" variant="outline-danger">
+  <b-icon-trash @click.stop="init_trash(r)" variant="danger"></b-icon-trash>
+</b-button>
+</b-list-group-item>
+```
 
 ## create login
 
 ## write authenticated
 
 ## remove public write
+
+## should add a caching system to only get resources that have changed
+## could add Notification(ESS)/Websocket(NSS) to track change 
 
 _____________________________________________
 
