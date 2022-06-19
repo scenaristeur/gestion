@@ -1,8 +1,8 @@
 <template>
-  <div class="home">
+  <b-container>
     <SolidLogin />
     <HelloWorld />
-  </div>
+  </b-container>
 </template>
 
 <script>

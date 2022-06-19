@@ -1,31 +1,37 @@
 <template>
-  <div class="hello">
+  <b-container>
     <b-input v-model="resource.name" placeholder="resource name"/>
-    <b-textarea v-model="resource.content" >Content</b-textarea>
-    <b-button @click="create"> Create a resource</b-button>
+    <b-textarea
+    v-model="resource.content"
+    placeholder="Enter something..."
+    rows="3"
+    max-rows="6"
+    >
+  </b-textarea>
+  <b-button @click="create"> Create a resource</b-button>
 
-    <b-button @click="read">Read</b-button>
+  <b-button @click="read">Read</b-button>
 
-    <!-- {{ resources }} -->
-    {{resources.length}} resources
-    <b-list-group>
-      <b-list-group-item button v-for="r in resources" :key="r.url"
-      class="item list-group-item d-flex justify-content-between p-1">
-      <p class="p-0 m-0 flex-grow-1">
-        <b>  {{r.data.name}}</b><br>
-        {{r.data}}<br>
-        <small><i>{{r.url}}</i></small>
-      </p>
-      <b-button size="sm" variant="outline-danger">
-        <b-icon-trash @click.stop="init_trash(r)" variant="danger"></b-icon-trash>
-      </b-button>
-    </b-list-group-item>
-  </b-list-group>
-</div>
+  <!-- {{ resources }} -->
+  {{resources.length}} resources
+  <b-list-group>
+    <b-list-group-item button v-for="r in resources" :key="r.url"
+    class="item list-group-item d-flex justify-content-between p-1">
+    <p class="p-0 m-0 flex-grow-1">
+      <b>  {{r.data.name}}</b><br>
+      {{r.data}}<br>
+      <small><i>{{r.url}}</i></small>
+    </p>
+    <b-button size="sm" variant="outline-danger">
+      <b-icon-trash @click.stop="init_trash(r)" variant="danger"></b-icon-trash>
+    </b-button>
+  </b-list-group-item>
+</b-list-group>
+</b-container>
 </template>
 
 <script>
-import { overwriteFile, getSourceUrl, getSolidDataset, getThingAll, getFile, deleteFile } from "@inrupt/solid-client";
+import { overwriteFile, /*saveFileInContainer,*/ getSourceUrl, getSolidDataset, getThingAll, getFile, deleteFile } from "@inrupt/solid-client";
 import * as sc from '@inrupt/solid-client-authn-browser'
 
 export default {
@@ -41,6 +47,7 @@ export default {
     this.read()
   },
   methods:{
+
     async create(){
       let d = Date.now()
       this.resource.created = d
@@ -66,30 +73,30 @@ export default {
 
     },
     async read(){
-      console.log("read")
+      //console.log("read")
       this.resources = []
       const dataset = await getSolidDataset(
         this.MY_POD_URL,
         { fetch: sc.fetch }  // fetch function from authenticated session
       );
 
-      console.log(dataset)
+    //  console.log(dataset)
       const resources = getThingAll( dataset );
 
-      console.log("files", resources)
+    //  console.log("files", resources)
 
       let files = resources.filter(r => r.url != this.MY_POD_URL)
 
-      console.log(files)
+    //  console.log(files)
       let app = this
 
       for(let f of files){
         try {
           const file = await getFile(
             f.url,               // File in Pod to Read
-             { fetch: sc.fetch }       // fetch from authenticated session
+            { fetch: sc.fetch }       // fetch from authenticated session
           );
-        //  console.log(file)
+          //  console.log(file)
 
           const fileReader = new FileReader()
           fileReader.addEventListener('load', () => {
@@ -111,9 +118,9 @@ export default {
       })
     },
     async init_trash(item){
-      console.log(item)
+    //  console.log(item)
       var remove = confirm("Are you sure you want to delete "+item.data.name+ " ?")
-      console.log(remove);
+    //  console.log(remove);
       if (remove == true ){
         try {
           // Delete the specified file from the Pod.
@@ -128,6 +135,23 @@ export default {
         }
       }
     },
+    // async createTest(){
+    //   let d = Date.now()
+    //   this.resource.created = d
+    //   this.resource.updated = d
+    //   console.log(this.resource)
+    //   let data = JSON.stringify(this.resource)
+    //   try {
+    //     const savedFile = await saveFileInContainer(
+    //       this.MY_POD_URL,           // Container URL
+    //       data,                         // File
+    //       { slug: d, contentType: "application/json", fetch: sc.fetch }
+    //     );
+    //     console.log(`File saved at ${getSourceUrl(savedFile)}`);
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // },
   },
 
 }
